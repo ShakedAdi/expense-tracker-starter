@@ -15,14 +15,14 @@ There is no test suite in this project.
 
 ## Architecture
 
-This is a single-file React app. All logic and UI lives in `src/App.jsx` — there are no sub-components, routing, or external state management.
+The app is composed of four components with no routing or external state management:
 
-**Key state in `App`:**
-- `transactions` — array of `{ id, description, amount, type, category, date }`. Note: `amount` is stored as a string (a known bug — arithmetic on it produces incorrect totals).
-- `filterType` / `filterCategory` — control which transactions are shown in the table.
+- **`App`** — holds the single source of truth: `transactions` array (`{ id, description, amount, type, category, date }`). Passes data and callbacks down to children.
+- **`Summary`** (`src/Summary.jsx`) — receives `transactions`, computes `totalIncome`, `totalExpenses`, and `balance` internally, and renders the three summary cards.
+- **`TransactionForm`** (`src/TransactionForm.jsx`) — owns its own form state (`description`, `amount`, `type`, `category`). Calls `onAdd(transaction)` prop on submit; `App` appends the new transaction to state.
+- **`TransactionList`** (`src/TransactionList.jsx`) — receives `transactions`, owns its own filter state (`filterType`, `filterCategory`), and renders the filtered table.
 
 **Known issues (intentional for the course):**
-- `amount` is never parsed to a number, so `totalIncome`, `totalExpenses`, and `balance` calculations are wrong.
 - Transaction #4 ("Freelance Work") is typed as `"expense"` but categorized as `"salary"`.
 - No delete functionality on transactions.
 - Styling is minimal/unstyled.
