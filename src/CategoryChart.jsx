@@ -1,18 +1,20 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
-const TICK_STYLE = { fill: '#4e607e', fontSize: 11, fontFamily: 'DM Mono, monospace' };
-const AXIS_LINE  = { stroke: 'rgba(255,255,255,0.06)' };
-const TOOLTIP_STYLE = {
-  background: '#0d1525',
-  border: '1px solid rgba(255,255,255,0.1)',
-  borderRadius: '8px',
-  color: '#dde4f0',
-  fontFamily: 'DM Mono, monospace',
-  fontSize: '13px',
-  boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-};
+const AXIS_COLOR = '#555872';
 
-function CategoryChart({ transactions, type, title, color }) {
+function CustomTooltip({ active, payload, label, color }) {
+  if (active && payload && payload.length) {
+    return (
+      <div style={{ background: '#21253a', border: '1px solid #2a2d3e', padding: '10px 14px' }}>
+        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: '#8b8fa8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>{label}</p>
+        <p style={{ fontFamily: "'DM Mono', monospace", fontSize: 16, color }}>${payload[0].value.toFixed(2)}</p>
+      </div>
+    );
+  }
+  return null;
+}
+
+function CategoryChart({ transactions, type, title, color, emptyMessage }) {
   const byCategory = transactions
     .filter(t => t.type === type)
     .reduce((acc, t) => {
@@ -26,25 +28,42 @@ function CategoryChart({ transactions, type, title, color }) {
     return (
       <div className="chart-container">
         <h2>{title}</h2>
-        <p>No {type} data to display.</p>
+        <p>{emptyMessage}</p>
       </div>
     );
   }
 
+  const r = parseInt(color.slice(1, 3), 16);
+  const g = parseInt(color.slice(3, 5), 16);
+  const b = parseInt(color.slice(5, 7), 16);
+
   return (
     <div className="chart-container">
       <h2>{title}</h2>
-      <ResponsiveContainer width="100%" height={280}>
-        <BarChart data={data} margin={{ top: 4, right: 4, left: -8, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-          <XAxis dataKey="name" tick={TICK_STYLE} axisLine={AXIS_LINE} tickLine={false} />
-          <YAxis tick={TICK_STYLE} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
-          <Tooltip
-            contentStyle={TOOLTIP_STYLE}
-            cursor={{ fill: 'rgba(255,255,255,0.04)' }}
-            formatter={(value) => [`$${value.toFixed(2)}`, 'Amount']}
+      <ResponsiveContainer width="100%" height={260}>
+        <BarChart data={data} barSize={28} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+          <XAxis
+            dataKey="name"
+            tick={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, fill: AXIS_COLOR }}
+            axisLine={{ stroke: '#2a2d3e' }}
+            tickLine={false}
           />
-          <Bar dataKey="value" fill={color} radius={[4, 4, 0, 0]} maxBarSize={48} />
+          <YAxis
+            tickFormatter={(v) => `$${v}`}
+            tick={{ fontFamily: "'DM Mono', monospace", fontSize: 11, fill: AXIS_COLOR }}
+            axisLine={false}
+            tickLine={false}
+            width={52}
+          />
+          <Tooltip
+            content={<CustomTooltip color={color} />}
+            cursor={{ fill: `rgba(${r},${g},${b},0.06)` }}
+          />
+          <Bar dataKey="value" name="Amount" radius={[2, 2, 0, 0]}>
+            {data.map((_, i) => (
+              <Cell key={i} fill={color} fillOpacity={0.85} />
+            ))}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>

@@ -44,17 +44,11 @@ function TransactionList({ transactions, onDelete }) {
         <tbody>
           {filtered.map(t => (
             <tr key={t.id}>
-              <td className="date-cell">{t.date}</td>
+              <td>{t.date}</td>
               <td>{t.description}</td>
-              <td>
-                <span className={`category-pill cat-${t.category}`}>
-                  {t.category}
-                </span>
-              </td>
-              <td>
-                <span className={t.type === "income" ? "income-amount" : "expense-amount"}>
-                  {t.type === "income" ? "+" : "−"}${t.amount.toLocaleString()}
-                </span>
+              <td>{t.category}</td>
+              <td className={t.type === "income" ? "income-amount" : "expense-amount"}>
+                {t.type === "income" ? "+" : "-"}${t.amount}
               </td>
               <td>
                 <button
@@ -65,7 +59,7 @@ function TransactionList({ transactions, onDelete }) {
                     }
                   }}
                 >
-                  Delete
+                  ×
                 </button>
               </td>
             </tr>

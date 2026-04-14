@@ -27,19 +27,15 @@ function App() {
 
   return (
     <div className="app">
-      <div className="app-header">
-        <h1>Finance <span>Tracker</span></h1>
-        <p className="subtitle">Track your income and expenses</p>
-      </div>
+      <h1>Finance Tracker</h1>
+      <p className="subtitle">Track your income and expenses</p>
 
       <Summary transactions={transactions} />
       <TransactionForm onAdd={handleAdd} />
-
-      <div className="charts-grid">
-        <CategoryChart transactions={transactions} type="expense" title="Spending by Category" color="#f0485e" />
-        <CategoryChart transactions={transactions} type="income"  title="Income by Category"  color="#0ecf8f" />
+      <div className="charts-row">
+        <CategoryChart transactions={transactions} type="expense" title="Spending by Category" color="#ff5252" emptyMessage="No expense data to display." />
+        <CategoryChart transactions={transactions} type="income" title="Income by Category" color="#00d4aa" emptyMessage="No income data to display." />
       </div>
-
       <TransactionList transactions={transactions} onDelete={handleDelete} />
     </div>
   );
