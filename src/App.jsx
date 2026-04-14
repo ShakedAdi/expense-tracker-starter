@@ -3,8 +3,7 @@ import './App.css'
 import Summary from './Summary'
 import TransactionForm from './TransactionForm'
 import TransactionList from './TransactionList'
-import SpendingChart from './SpendingChart'
-import IncomeChart from './IncomeChart'
+import CategoryChart from './CategoryChart'
 
 function App() {
   const [transactions, setTransactions] = useState([
@@ -37,8 +36,8 @@ function App() {
       <TransactionForm onAdd={handleAdd} />
 
       <div className="charts-grid">
-        <SpendingChart transactions={transactions} />
-        <IncomeChart transactions={transactions} />
+        <CategoryChart transactions={transactions} type="expense" title="Spending by Category" color="#f0485e" />
+        <CategoryChart transactions={transactions} type="income"  title="Income by Category"  color="#0ecf8f" />
       </div>
 
       <TransactionList transactions={transactions} onDelete={handleDelete} />

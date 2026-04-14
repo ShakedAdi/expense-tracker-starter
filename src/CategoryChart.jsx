@@ -12,28 +12,28 @@ const TOOLTIP_STYLE = {
   boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
 };
 
-function SpendingChart({ transactions }) {
-  const expensesByCategory = transactions
-    .filter(t => t.type === 'expense')
+function CategoryChart({ transactions, type, title, color }) {
+  const byCategory = transactions
+    .filter(t => t.type === type)
     .reduce((acc, t) => {
       acc[t.category] = (acc[t.category] || 0) + t.amount;
       return acc;
     }, {});
 
-  const data = Object.entries(expensesByCategory).map(([name, value]) => ({ name, value }));
+  const data = Object.entries(byCategory).map(([name, value]) => ({ name, value }));
 
   if (data.length === 0) {
     return (
       <div className="chart-container">
-        <h2>Spending by Category</h2>
-        <p>No expense data to display.</p>
+        <h2>{title}</h2>
+        <p>No {type} data to display.</p>
       </div>
     );
   }
 
   return (
     <div className="chart-container">
-      <h2>Spending by Category</h2>
+      <h2>{title}</h2>
       <ResponsiveContainer width="100%" height={280}>
         <BarChart data={data} margin={{ top: 4, right: 4, left: -8, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
@@ -44,11 +44,11 @@ function SpendingChart({ transactions }) {
             cursor={{ fill: 'rgba(255,255,255,0.04)' }}
             formatter={(value) => [`$${value.toFixed(2)}`, 'Amount']}
           />
-          <Bar dataKey="value" fill="#f0485e" radius={[4, 4, 0, 0]} maxBarSize={48} />
+          <Bar dataKey="value" fill={color} radius={[4, 4, 0, 0]} maxBarSize={48} />
         </BarChart>
       </ResponsiveContainer>
     </div>
   );
 }
 
-export default SpendingChart;
+export default CategoryChart;
